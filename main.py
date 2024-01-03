@@ -1,24 +1,29 @@
 class Character:
-    points_for_level = [1000, 1550, 2050, 2600, 3175, 3750, 4350, 4975, 5650]
-    daily = 340  # сколько опыта дают за дейлики за 1 день
-    teapot = 120  # сколько опыта дают за 24 часа в чайнике
+    POINTS_FOR_LEVEL = [1000, 1550, 2050, 2600, 3175, 3750, 4350, 4975, 5650]
+    DAILY = 340  # сколько опыта дают за дейлики за 1 день
+    TEAPOT = 120  # сколько опыта дают за 24 часа в чайнике
+
+    @staticmethod
+    def points_for_10_level(current_level: int, progress: float):
+        points = (1 - progress) * Character.POINTS_FOR_LEVEL[current_level - 1]  # сколько очков нужно для 10 уровня
+        for i in range(current_level, 9):
+            points += Character.POINTS_FOR_LEVEL[i]
+        return round(points)
 
     def __init__(self, name: str, current_level: int, progress: float):
         self.name = name  # имя перса
-        points = (1 - progress) * Character.points_for_level[current_level - 1]  # сколько очков нужно для 10 уровня
-        for i in range(current_level, 9):
-            points += Character.points_for_level[i]
-        self.points = round(points)
+        self.points = Character.points_for_10_level(current_level, progress) #сколько очков нужно до 10 уровня
 
 
-def recieve_points(squad):
-    for i in range(min(len(squad), 4)):  # первые 4 перса получат опыт за дейлики и чайник
-        squad[i].points -= (Character.daily + Character.teapot)
-    for i in range(4, len(squad)):  # вторые 4 перса получат опыт только за чайник
-        squad[i].points -= Character.teapot
+def recieve_points(squad: list[Character]):
+    map(lambda x: x.points-(Character.DAILY + Character.TEAPOT),  squad[:4])
+    for ch in squad[:4]:  # первые 4 перса получат опыт за дейлики и чайник
+        ch.points -= (Character.DAILY + Character.TEAPOT)
+    for ch in squad[4:]:  # вторые 4 перса получат опыт только за чайник
+        ch.points -= Character.TEAPOT
 
 
-def check_if_someone_got_10_lvl(squad):
+def check_if_someone_got_10_lvl(squad: list[Character]):
     i = 0
     while i < len(squad):  # Проверяем весь отряд.
         # Использовала while, потому что len(squad) может меняться во время цикла
@@ -28,8 +33,8 @@ def check_if_someone_got_10_lvl(squad):
         i += 1
 
 
-def add_characters_to_squad(squad, waiting):
-    while (len(waiting) != 0) and (len(squad) < 8):  # если у нас ещё остались персонажи ожидающие помещения в отряд
+def add_characters_to_squad(squad: list[Character], waiting: list[Character]):
+    while (waiting) and (len(squad) < 8):  # если у нас ещё остались персонажи ожидающие помещения в отряд
         squad.append(waiting[0])  # добавляем его в отряд
         waiting.pop(0)  # удаляем из ожидающих
 
@@ -69,7 +74,7 @@ if __name__ == '__main__':
     squad = characters[:8]
     waiting = characters[8:]
     days = 1  # счётчик дней
-    while len(squad) != 0:
+    while squad:
         recieve_points(squad)  # получение очков дружбы
         check_if_someone_got_10_lvl(squad)  # проверяем, если кто-то получил 10 уровень и удаляем его из отряда
         add_characters_to_squad(squad, waiting)  # добавляем персов в отряд до 8
