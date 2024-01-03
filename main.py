@@ -1,5 +1,5 @@
-CHARACTERS_IN_TEAPOT=8
-CHARACTERS_FOR_DAILIES=4
+CHARACTERS_IN_TEAPOT = 8
+CHARACTERS_FOR_DAILIES = 4
 
 
 class Character:
@@ -20,7 +20,7 @@ class Character:
         self.points = Character.points_for_10_level(current_level, progress)  # сколько очков нужно до 10 уровня
 
 
-def recieve_points(squad: list[Character]):
+def receive_points(squad: list[Character]):
     """Получение очков дружбы персонажами в отряде. Первые 4 перса получат опыт за дейлики и чайник,
     вторые 4 перса получат опыт только за чайник."""
     for ch in squad[:CHARACTERS_FOR_DAILIES]:
@@ -43,7 +43,8 @@ def check_if_someone_got_10_lvl(squad: list[Character]):
 
 def add_characters_to_squad(squad: list[Character], waiting: list[Character]):
     """Добавляем в отряд персонажей "из ожидания" чтобы персонажей в отряде стало 8"""
-    while waiting and (len(squad) < CHARACTERS_IN_TEAPOT):  # если у нас ещё остались персонажи ожидающие помещения в отряд
+    while waiting and (
+            len(squad) < CHARACTERS_IN_TEAPOT):  # если у нас ещё остались персонажи ожидающие помещения в отряд
         squad.append(waiting[0])  # добавляем его в отряд
         waiting.pop(0)  # удаляем из ожидающих
 
@@ -84,7 +85,7 @@ if __name__ == '__main__':
     waiting = characters[CHARACTERS_IN_TEAPOT:]
     days = 1  # счётчик дней
     while squad:
-        recieve_points(squad)  # получение очков дружбы
+        receive_points(squad)  # получение очков дружбы
         check_if_someone_got_10_lvl(squad)  # проверяем, если кто-то получил 10 уровень и удаляем его из отряда
         add_characters_to_squad(squad, waiting)  # добавляем персов в отряд до 8
         days += 1
