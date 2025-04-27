@@ -20,20 +20,25 @@ class Character:
         self.name = name  # имя перса
         self.points_left = Character.points_for_10_level(current_level, progress)  # сколько очков нужно до 10 уровня
 
-    def receive_points_for_teapot(self):
-        self.points_left -= Character.TEAPOT
+    def __eq__(self, other):
+        if not isinstance(other, Character):
+            return NotImplemented
+        return self.name == other.name and self.points_left == other.points_left
 
-    def receive_points_for_dailies(self):
-        self.points_left -= Character.DAILY
+    def receive_points_for_teapot(self, days: int = 1):
+        self.points_left -= Character.TEAPOT*days
+
+    def receive_points_for_dailies(self, days: int = 1):
+        self.points_left -= Character.DAILY*days
 
 
-def receive_points(squad: list[Character]):
+def receive_points(squad: list[Character], days: int = 1):
     """Получение очков дружбы персонажами в отряде. Первые 4 перса получат опыт за дейлики и чайник,
     вторые 4 перса получат опыт только за чайник."""
     for ch in squad[:CHARACTERS_FOR_DAILIES]:
-        ch.receive_points_for_dailies()
+        ch.receive_points_for_dailies(days)
     for ch in squad:
-        ch.receive_points_for_teapot()
+        ch.receive_points_for_teapot(days)
 
 
 def check_if_someone_got_10_lvl(squad: list[Character]) -> list[Character]:
@@ -66,35 +71,20 @@ def add_characters_to_squad(squad: list[Character], waiting: list[Character]):
 
 if __name__ == '__main__':
     characters = [
-        Character("Линетт", 9, 0.4146),
-        Character("Шарлотта", 7, 0.9268),
-        Character("Фремине", 5, 0.9146),
-        Character("Дэхья", 2, 0.1951),
-        Character("Мика", 8, 0.6463),
-        Character("Кандакия", 7, 0.8048),
-        Character("Кавех", 7, 0.6951),
-        Character("Сара", 9, 0.12195),
-        Character("Кэ Цин", 8, 0.8780),
-        Character("Ци Ци", 8, 0.8170),
-        Character("Саю", 8, 0.6585),
-        Character("Яо Яо", 8, 0.3170),
-        Character("Джинн", 8, 0.2317),
-        Character("Фарузан", 8, 0.2073),
-        Character("Дилюк", 4, 0.7073),
-        Character("Мона", 7, 0.0976),
-        Character("Барбара", 7, 0.0121),
-        Character("Коллеи", 6, 0.3658),
-        Character("Тигнари", 5, 0.7927),
-        Character("Лини", 8, 0.8536),
-        Character("Кли", 7, 0.9390),
-        Character("Фурина", 4, 0.3659),
-        Character("Нахида", 2, 0.6951),
-        Character("Аяка", 3, 0.0731),
-        Character("Серёжа", 5, 0.2073),
-        Character("Тарталья", 5, 0.2439),
-        Character("Яэ Мико", 5, 0.4756),
-        Character("Син Цю", 7, 0.1951),
-        Character("Ёимия", 8, 0.6829),
+        Character("Иансан", 6, 0.1220),
+        Character("Оророн", 6, 0.7073),
+        Character("Серёжа", 9, 0.1098),
+        Character("Райден", 9, 0.2805),
+        Character("Син Цю", 9, 0.5975),
+        Character("Ризли", 8, 0.0122),
+        Character("Арлекино", 8, 0.7561),
+        Character("Нахида", 8, 0.1585),
+        Character("Яэ Мико", 8, 0.8658),
+        Character("Яо Яо", 8, 0.8293),
+        Character("Мавуика", 8, 0.6707),
+        Character("Качина", 9, 0.6220),
+        Character("Вареса", 8, 0.5000),
+        Character("Сиджвин", 9, 0.3171),
     ]
     squad = characters[:CHARACTERS_IN_TEAPOT]
     waiting = characters[CHARACTERS_IN_TEAPOT:]
